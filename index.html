@@ -6,6 +6,13 @@
     <title>Activador Energético</title>
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#4f46e5" />
+    <!--
+      TAILWIND CSS VIA CDN
+      NOTE: The console warning about using the Tailwind CDN is a best-practice recommendation
+      for production apps. For optimal performance, installing Tailwind as a PostCSS plugin
+      is preferred, but it requires a build setup (like Vite, Webpack, etc.).
+      For this project's simple static structure, the CDN is perfectly fine and functional.
+    -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,18 +68,27 @@
 </head>
   <body class="bg-gray-100 dark:bg-slate-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
     <div id="root"></div>
+    <!--
+      PWA SERVICE WORKER SETUP
+      IMPORTANT DEPLOYMENT NOTE FOR THE 404 ERROR ON 'sw.js':
+      The error "Failed to register a ServiceWorker... a bad HTTP response code (404) was received"
+      means your hosting provider cannot find the 'sw.js' file. This is a deployment configuration
+      issue, not a bug in the code itself.
+
+      To fix this:
+      1. Ensure 'sw.js' is in the root directory of your project, at the same level as 'index.html'.
+      2. Check your hosting settings (e.g., on Vercel or Netlify) to ensure the "Root Directory"
+         for the deployment points to the folder containing both 'index.html' and 'sw.js'.
+    -->
     <script>
       // PWA Service Worker Registration
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          // Note: The service worker file (sw.js) must be located at the root of your site.
-          // If you see a 404 error for sw.js, please check your server configuration
-          // to ensure it can be served from the '/' path.
           navigator.serviceWorker.register('/sw.js').then(registration => {
             console.log('SW registered: ', registration);
           }).catch(registrationError => {
             console.error('SW registration failed:', registrationError);
-            console.error('This 404 error usually means the sw.js file could not be found. Please ensure your server is configured to serve sw.js from the root path "/" of your application.');
+            console.error("This 404 error means the sw.js file could not be found. Please check the comments in index.html and sw.js for instructions on how to fix your deployment configuration.");
           });
         });
       }

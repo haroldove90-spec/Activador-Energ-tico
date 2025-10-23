@@ -1,3 +1,11 @@
+// Activador Energético - Service Worker
+//
+// IMPORTANT DEPLOYMENT NOTE:
+// This file must be placed in the root directory of your project
+// so it can be served from the root URL of your website (e.g., https://your-site.com/sw.js).
+// This is required for the service worker to control the entire site scope.
+// If you are seeing a 404 error for this file, please check your deployment settings.
+
 const CACHE_NAME = 'activador-energetico-cache-v1';
 const URLS_TO_CACHE = [
   '/',
