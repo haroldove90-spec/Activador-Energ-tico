@@ -68,29 +68,17 @@
 </head>
   <body class="bg-gray-100 dark:bg-slate-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
     <div id="root"></div>
-    <!--
-      PWA SERVICE WORKER SETUP
-      IMPORTANT DEPLOYMENT NOTE FOR THE 404 ERROR ON 'sw.js':
-      The error "Failed to register a ServiceWorker... a bad HTTP response code (404) was received"
-      means your hosting provider cannot find the 'sw.js' file. This is a deployment configuration
-      issue, not a bug in the code itself.
-
-      To fix this:
-      1. Ensure 'sw.js' is in the root directory of your project, at the same level as 'index.html'.
-      2. Check your hosting settings (e.g., on Vercel or Netlify) to ensure the "Root Directory"
-         for the deployment points to the folder containing both 'index.html' and 'sw.js'.
-    -->
     <script>
       // PWA Service Worker Registration
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          // Using a relative path 'sw.js' instead of an absolute '/sw.js'.
-          // This can be more robust in some deployment environments.
-          navigator.serviceWorker.register('sw.js').then(registration => {
+          // Using an absolute path '/sw.js' to ensure it's resolved from the root.
+          // This is crucial for PWA functionality and offline support.
+          navigator.serviceWorker.register('/sw.js').then(registration => {
             console.log('SW registered: ', registration);
           }).catch(registrationError => {
             console.error('SW registration failed:', registrationError);
-            console.error("This 404 error means the sw.js file could not be found. Please check the comments in index.html and sw.js for instructions on how to fix your deployment configuration.");
+            console.error("If you see a 404 error for sw.js, it means your server is not configured to serve it from the root directory. Please check your deployment settings.");
           });
         });
       }
