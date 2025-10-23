@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import type { CodeOrRune, SacredCode } from '../types';
 import AISearch from './AISearch';
@@ -16,10 +15,9 @@ interface CodeSelectorProps {
   title: string;
   themeColor: 'purple' | 'pink' | 'amber';
   handleApiKeyError: () => void;
-  isAistudioAvailable: boolean;
 }
 
-const CodeSelector: React.FC<CodeSelectorProps> = ({ codes, categories, onCodeSelect, onBack, setView, searchType, title, themeColor, handleApiKeyError, isAistudioAvailable }) => {
+const CodeSelector: React.FC<CodeSelectorProps> = ({ codes, categories, onCodeSelect, onBack, setView, searchType, title, themeColor, handleApiKeyError }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categories[0]);
   const [searchTerm, setSearchTerm] = useState('');
   const [aiFoundCode, setAiFoundCode] = useState<CodeOrRune | null>(null);
@@ -107,9 +105,7 @@ const CodeSelector: React.FC<CodeSelectorProps> = ({ codes, categories, onCodeSe
 
       <h1 className={`text-4xl font-bold text-center mb-4 ${themeClasses.title}`}>{title}</h1>
 
-      {isAistudioAvailable && (
-        <AISearch codes={codes} onCodeFound={handleAiFound} onClear={clearAiSearch} searchType={searchType} handleApiKeyError={handleApiKeyError} />
-      )}
+      <AISearch codes={codes} onCodeFound={handleAiFound} onClear={clearAiSearch} searchType={searchType} handleApiKeyError={handleApiKeyError} />
 
       <div className="flex flex-wrap justify-center gap-2 mb-6">
         {categories.map(category => (
@@ -143,7 +139,7 @@ const CodeSelector: React.FC<CodeSelectorProps> = ({ codes, categories, onCodeSe
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{code.description}</p>
           </div>
         )) : (
-            <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-8">No se encontraron resultados. {isAistudioAvailable ? '¡Prueba la búsqueda con IA!' : ''}</p>
+            <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-8">No se encontraron resultados. ¡Prueba la búsqueda con IA!</p>
         )}
       </div>
     </div>

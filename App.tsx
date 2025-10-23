@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import RoleSelector from './components/RoleSelector';
 import CodeSelector from './components/CodeSelector';
@@ -99,11 +98,11 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     if (view === 'roles') {
-      return <RoleSelector onSelectRole={handleSelectRole} isAistudioAvailable={isAistudioAvailable} />;
+      return <RoleSelector onSelectRole={handleSelectRole} />;
     }
     
     if (view === 'faq') {
-        return <FaqPanel onBack={() => setView('main')} handleApiKeyError={handleApiKeyError} isAistudioAvailable={isAistudioAvailable} />;
+        return <FaqPanel onBack={() => setView('main')} handleApiKeyError={handleApiKeyError} />;
     }
 
     if (view === 'journal') {
@@ -120,17 +119,17 @@ const App: React.FC = () => {
 
       switch (selectedRole) {
         case 'sacred':
-          return <CodeSelector codes={SACRED_CODES} categories={SACRED_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos Sagrados" themeColor="purple" handleApiKeyError={handleApiKeyError} isAistudioAvailable={isAistudioAvailable} />;
+          return <CodeSelector codes={SACRED_CODES} categories={SACRED_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos Sagrados" themeColor="purple" handleApiKeyError={handleApiKeyError} />;
         case 'agesta':
-          return <CodeSelector codes={AGESTA_CODES} categories={AGESTA_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos de Agesta" themeColor="pink" handleApiKeyError={handleApiKeyError} isAistudioAvailable={isAistudioAvailable} />;
+          return <CodeSelector codes={AGESTA_CODES} categories={AGESTA_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos de Agesta" themeColor="pink" handleApiKeyError={handleApiKeyError} />;
         case 'runes':
-          return <CodeSelector codes={RUNES} categories={RUNE_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="rune" title="Oráculo de Runas" themeColor="amber" handleApiKeyError={handleApiKeyError} isAistudioAvailable={isAistudioAvailable} />;
+          return <CodeSelector codes={RUNES} categories={RUNE_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="rune" title="Oráculo de Runas" themeColor="amber" handleApiKeyError={handleApiKeyError} />;
         default:
-          return <RoleSelector onSelectRole={handleSelectRole} isAistudioAvailable={isAistudioAvailable} />;
+          return <RoleSelector onSelectRole={handleSelectRole} />;
       }
     }
     
-    return <RoleSelector onSelectRole={handleSelectRole} isAistudioAvailable={isAistudioAvailable} />;
+    return <RoleSelector onSelectRole={handleSelectRole} />;
   };
 
   if (isAistudioAvailable && !isApiKeyReady) {

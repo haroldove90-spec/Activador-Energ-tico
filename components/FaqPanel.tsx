@@ -1,4 +1,3 @@
-
 import React, { useState, FormEvent } from 'react';
 import { GoogleGenAI } from '@google/genai';
 import { BackArrowIcon, SearchIcon } from './icons';
@@ -11,10 +10,9 @@ interface Message {
 interface FaqPanelProps {
     onBack: () => void;
     handleApiKeyError: () => void;
-    isAistudioAvailable: boolean;
 }
 
-const FaqPanel: React.FC<FaqPanelProps> = ({onBack, handleApiKeyError, isAistudioAvailable}) => {
+const FaqPanel: React.FC<FaqPanelProps> = ({onBack, handleApiKeyError}) => {
   const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -87,7 +85,7 @@ const FaqPanel: React.FC<FaqPanelProps> = ({onBack, handleApiKeyError, isAistudi
 
       <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">Centro de Sabiduría</h2>
       
-      <div className={`grid ${isAistudioAvailable ? 'lg:grid-cols-2' : 'lg:grid-cols-1'} gap-8`}>
+      <div className="grid lg:grid-cols-2 gap-8">
         {/* FAQ Section */}
         <div className="lg:col-span-1">
             <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Preguntas Frecuentes</h3>
@@ -112,36 +110,34 @@ const FaqPanel: React.FC<FaqPanelProps> = ({onBack, handleApiKeyError, isAistudi
         </div>
 
         {/* AI Chat Section */}
-        {isAistudioAvailable && (
-            <div className="lg:col-span-1">
-                <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Consulta al Sabio</h3>
-                <div className="bg-white dark:bg-slate-900/50 h-[500px] flex flex-col border border-gray-200 dark:border-slate-700 rounded-lg">
-                    <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-                        {chatHistory.length === 0 && <p className="text-center text-gray-500 dark:text-gray-400 mt-4">Haz una pregunta sobre historia, usos o cualquier otra duda que tengas...</p>}
-                        {chatHistory.map((msg, index) => (
-                            <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`max-w-xs lg:max-w-md p-3 rounded-lg ${msg.role === 'user' ? 'bg-purple-600 text-white' : 'bg-gray-200 dark:bg-slate-700 text-gray-800 dark:text-gray-200'}`}>
-                                    <p className="text-sm" dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-                                </div>
+        <div className="lg:col-span-1">
+            <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Consulta al Sabio</h3>
+            <div className="bg-white dark:bg-slate-900/50 h-[500px] flex flex-col border border-gray-200 dark:border-slate-700 rounded-lg">
+                <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+                    {chatHistory.length === 0 && <p className="text-center text-gray-500 dark:text-gray-400 mt-4">Haz una pregunta sobre historia, usos o cualquier otra duda que tengas...</p>}
+                    {chatHistory.map((msg, index) => (
+                        <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`max-w-xs lg:max-w-md p-3 rounded-lg ${msg.role === 'user' ? 'bg-purple-600 text-white' : 'bg-gray-200 dark:bg-slate-700 text-gray-800 dark:text-gray-200'}`}>
+                                <p className="text-sm" dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
                             </div>
-                        ))}
-                        {isLoading && <div className="flex justify-start"><div className="p-3 rounded-lg bg-gray-200 dark:bg-slate-700"><span className="animate-pulse">...</span></div></div>}
-                    </div>
-                    <form onSubmit={handleAskAI} className="p-4 border-t border-gray-200 dark:border-slate-700 flex gap-2">
-                        <input 
-                            type="text"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Escribe tu pregunta aquí..."
-                            className="w-full px-4 py-2 rounded-full border-2 border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition"
-                        />
-                        <button type="submit" disabled={isLoading || !query.trim()} className="p-3 bg-purple-600 text-white rounded-full hover:bg-purple-700 disabled:bg-purple-300 dark:disabled:bg-purple-800 transition-colors">
-                            <SearchIcon className="w-5 h-5" />
-                        </button>
-                    </form>
+                        </div>
+                    ))}
+                    {isLoading && <div className="flex justify-start"><div className="p-3 rounded-lg bg-gray-200 dark:bg-slate-700"><span className="animate-pulse">...</span></div></div>}
                 </div>
+                <form onSubmit={handleAskAI} className="p-4 border-t border-gray-200 dark:border-slate-700 flex gap-2">
+                    <input 
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Escribe tu pregunta aquí..."
+                        className="w-full px-4 py-2 rounded-full border-2 border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition"
+                    />
+                    <button type="submit" disabled={isLoading || !query.trim()} className="p-3 bg-purple-600 text-white rounded-full hover:bg-purple-700 disabled:bg-purple-300 dark:disabled:bg-purple-800 transition-colors">
+                        <SearchIcon className="w-5 h-5" />
+                    </button>
+                </form>
             </div>
-        )}
+        </div>
       </div>
     </div>
   );
