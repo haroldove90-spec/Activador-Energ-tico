@@ -1,10 +1,12 @@
-// Activador Energético - Service Worker
+// === DEPLOYMENT CRITICAL ===
+// This file ('sw.js') MUST be served from the root of your domain.
+// Example: If your site is 'https://example.com', this file must be accessible at 'https://example.com/sw.js'.
 //
-// IMPORTANT DEPLOYMENT NOTE:
-// This file must be placed in the root directory of your project
-// so it can be served from the root URL of your website (e.g., https://your-site.com/sw.js).
-// This is required for the service worker to control the entire site scope.
-// If you are seeing a 404 error for this file, please check your deployment settings.
+// A 404 ERROR FOR THIS FILE IS A SERVER CONFIGURATION PROBLEM.
+//
+// To fix this, you must configure your hosting provider (Vercel, Netlify, Firebase, etc.)
+// to serve this file from the root path. This cannot be fixed by changing the code in 'index.html'.
+// The service worker is required for Progressive Web App (PWA) features like offline access.
 
 const CACHE_NAME = 'activador-energetico-cache-v1';
 const URLS_TO_CACHE = [
