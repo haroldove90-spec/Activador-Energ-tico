@@ -4,13 +4,14 @@
   "description": "Manifiesta, sana y conéctate con la sabiduría universal a través de Códigos Sagrados, Agesta y Runas.",
   "icons": [
     {
-      "src": "https://aistudio.google.com/projects/2932808c-9c7a-426c-829d-64d42042d380/assets/5e0061e8-d621-4f1b-b384-0a86f9d02330",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%234f46e5%22/><text x=%2250%22 y=%2250%22 font-size=%2250%22 fill=%22white%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>✨</text></svg>",
+      "type": "image/svg+xml",
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://aistudio.google.com/projects/2932808c-9c7a-426c-829d-64d42042d380/assets/c665e718-a6e5-430c-99c4-0683a30c80d8",
-      "type": "image/png",
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2250%22 font-size=%2290%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>✨</text></svg>",
+      "type": "image/svg+xml",
       "sizes": "512x512"
     }
   ],
