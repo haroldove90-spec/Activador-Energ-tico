@@ -1,0 +1,21 @@
+{
+  "short_name": "Energético",
+  "name": "Activador Energético",
+  "description": "Manifiesta, sana y conéctate con la sabiduría universal a través de Códigos Sagrados, Agesta y Runas.",
+  "icons": [
+    {
+      "src": "https://aistudio.google.com/projects/2932808c-9c7a-426c-829d-64d42042d380/assets/5e0061e8-d621-4f1b-b384-0a86f9d02330",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://aistudio.google.com/projects/2932808c-9c7a-426c-829d-64d42042d380/assets/c665e718-a6e5-430c-99c4-0683a30c80d8",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4f46e5",
+  "background_color": "#f3f4f6"
+}
