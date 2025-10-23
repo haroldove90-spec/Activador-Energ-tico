@@ -6,31 +6,36 @@ import ActivationPanel from './components/ActivationPanel';
 import RunePanel from './components/RunePanel';
 import FaqPanel from './components/FaqPanel';
 import JournalPanel from './components/JournalPanel';
+import ThemeToggle from './components/ThemeToggle';
 import { SACRED_CODES, AGESTA_CODES, RUNES, SACRED_CATEGORIES, AGESTA_CATEGORIES, RUNE_CATEGORIES } from './constants';
 import type { SacredCode, Rune, CodeOrRune, Theme } from './types';
 
 export type CodeType = 'sacred' | 'agesta' | 'runes' | null;
 type View = 'roles' | 'main' | 'faq' | 'journal';
 
-// Helper to apply theme based on system preference.
-const applySystemTheme = () => {
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-};
-
-
 const App: React.FC = () => {
   const [view, setView] = useState<View>('roles');
   const [selectedRole, setSelectedRole] = useState<CodeType>(null);
   const [selectedItem, setSelectedItem] = useState<CodeOrRune | null>(null);
   const [isApiKeyReady, setIsApiKeyReady] = useState(false);
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === 'undefined') return 'light';
+    const storedTheme = localStorage.getItem('theme') as Theme | null;
+    if (storedTheme) return storedTheme;
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    return 'light';
+  });
 
   useEffect(() => {
-    applySystemTheme();
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
+  useEffect(() => {
     const checkApiKey = async () => {
         // @ts-ignore
         if (window.aistudio && await window.aistudio.hasSelectedApiKey()) {
@@ -38,12 +43,6 @@ const App: React.FC = () => {
         }
     };
     checkApiKey();
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = () => applySystemTheme();
-    mediaQuery.addEventListener('change', handleChange);
-
-    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
   
   const handleSelectRole = (role: CodeType) => {
@@ -136,11 +135,13 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen p-4 sm:p-8 flex flex-col items-center">
-        <header className="w-full max-w-5xl flex justify-center items-center mb-8">
+        <header className="w-full max-w-5xl flex justify-between items-start mb-8">
+            <div className="w-12 h-12" /> {/* Spacer */}
             <div className="text-center">
                 <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-800 dark:text-gray-100">Activador Energético</h1>
                 <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">Manifiesta, sana y conéctate con la sabiduría universal.</p>
             </div>
+            <ThemeToggle theme={theme} setTheme={setTheme} />
         </header>
 
         <main className="w-full max-w-5xl">
