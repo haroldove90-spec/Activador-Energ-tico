@@ -71,7 +71,8 @@
           navigator.serviceWorker.register('/sw.js').then(registration => {
             console.log('SW registered: ', registration);
           }).catch(registrationError => {
-            console.log('SW registration failed: ', registrationError);
+            console.error('SW registration failed:', registrationError);
+            console.error('This 404 error usually means the sw.js file could not be found. Please ensure your server is configured to serve sw.js from the root path "/" of your application.');
           });
         });
       }
