@@ -99,11 +99,11 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     if (view === 'roles') {
-      return <RoleSelector onSelectRole={handleSelectRole} />;
+      return <RoleSelector onSelectRole={handleSelectRole} isAistudioAvailable={isAistudioAvailable} />;
     }
     
     if (view === 'faq') {
-        return <FaqPanel onBack={() => setView('main')} handleApiKeyError={handleApiKeyError} />;
+        return <FaqPanel onBack={() => setView('main')} handleApiKeyError={handleApiKeyError} isAistudioAvailable={isAistudioAvailable} />;
     }
 
     if (view === 'journal') {
@@ -120,34 +120,20 @@ const App: React.FC = () => {
 
       switch (selectedRole) {
         case 'sacred':
-          return <CodeSelector codes={SACRED_CODES} categories={SACRED_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos Sagrados" themeColor="purple" handleApiKeyError={handleApiKeyError} />;
+          return <CodeSelector codes={SACRED_CODES} categories={SACRED_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos Sagrados" themeColor="purple" handleApiKeyError={handleApiKeyError} isAistudioAvailable={isAistudioAvailable} />;
         case 'agesta':
-          return <CodeSelector codes={AGESTA_CODES} categories={AGESTA_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos de Agesta" themeColor="pink" handleApiKeyError={handleApiKeyError} />;
+          return <CodeSelector codes={AGESTA_CODES} categories={AGESTA_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos de Agesta" themeColor="pink" handleApiKeyError={handleApiKeyError} isAistudioAvailable={isAistudioAvailable} />;
         case 'runes':
-          return <CodeSelector codes={RUNES} categories={RUNE_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="rune" title="Oráculo de Runas" themeColor="amber" handleApiKeyError={handleApiKeyError} />;
+          return <CodeSelector codes={RUNES} categories={RUNE_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="rune" title="Oráculo de Runas" themeColor="amber" handleApiKeyError={handleApiKeyError} isAistudioAvailable={isAistudioAvailable} />;
         default:
-          return <RoleSelector onSelectRole={handleSelectRole} />;
+          return <RoleSelector onSelectRole={handleSelectRole} isAistudioAvailable={isAistudioAvailable} />;
       }
     }
     
-    return <RoleSelector onSelectRole={handleSelectRole} />;
+    return <RoleSelector onSelectRole={handleSelectRole} isAistudioAvailable={isAistudioAvailable} />;
   };
 
-  if (!isAistudioAvailable) {
-    return (
-        <div className="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center animate-fade-in">
-          <div className="w-full max-w-md text-center bg-white/60 dark:bg-slate-800/40 p-8 rounded-2xl shadow-lg border border-red-200 dark:border-red-900/50">
-            <h1 className="text-3xl font-bold text-red-800 dark:text-red-200 mb-4">Error de Entorno</h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              La funcionalidad de Inteligencia Artificial no se pudo cargar. Por favor, asegúrate de estar ejecutando esta aplicación en un entorno compatible para poder utilizarla.
-            </p>
-          </div>
-        </div>
-    );
-  }
-
-
-  if (!isApiKeyReady) {
+  if (isAistudioAvailable && !isApiKeyReady) {
     return (
       <div className="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center animate-fade-in">
         <div className="w-full max-w-md text-center bg-white/60 dark:bg-slate-800/40 p-8 rounded-2xl shadow-lg border border-purple-100 dark:border-purple-900/50">

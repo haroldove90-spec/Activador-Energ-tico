@@ -68,24 +68,24 @@
 </head>
   <body class="bg-gray-100 dark:bg-slate-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
     <div id="root"></div>
+    <!--
     <script>
       // PWA Service Worker Registration
+      // NOTE: This has been temporarily disabled to prevent 404 errors in deployment
+      // environments where serving 'sw.js' from the root directory is not configured.
+      // To re-enable PWA/offline capabilities, you MUST ensure your server can serve
+      // the 'sw.js' file from the root path '/'.
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          // Registering with an absolute path '/sw.js'. This is the correct standard.
           navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(registration => {
             console.log('SW registered: ', registration);
           }).catch(registrationError => {
             console.error('SW registration failed:', registrationError);
-            // CRITICAL: A 404 error here is the most common issue. It means your web server 
-            // is not correctly serving the 'sw.js' file from the root directory of your site.
-            // FIX: Ensure your deployment configuration (e.g., in Vercel, Netlify, Firebase hosting) 
-            // makes 'sw.js' accessible at https://your-domain.com/sw.js. 
-            // This is a SERVER-SIDE configuration, not an issue with this HTML file.
-            console.error("This 404 error means the sw.js file could not be found. Please check your deployment configuration to ensure 'sw.js' is served from the root path '/'.");
+            console.error("A 404 error means the sw.js file could not be found. Please check your deployment configuration to ensure 'sw.js' is served from the root path '/'.");
           });
         });
       }
     </script>
+    -->
   </body>
 </html>
