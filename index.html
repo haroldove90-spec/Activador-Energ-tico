@@ -72,13 +72,13 @@
       // PWA Service Worker Registration
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          // Using an absolute path '/sw.js' to ensure it's resolved from the root.
-          // This is crucial for PWA functionality and offline support.
-          navigator.serviceWorker.register('/sw.js').then(registration => {
+          // Using a relative path 'sw.js' to ensure it's resolved from the same directory as index.html.
+          // This is more robust for static deployments and should fix the 404 error.
+          navigator.serviceWorker.register('sw.js').then(registration => {
             console.log('SW registered: ', registration);
           }).catch(registrationError => {
             console.error('SW registration failed:', registrationError);
-            console.error("If you see a 404 error for sw.js, it means your server is not configured to serve it from the root directory. Please check your deployment settings.");
+            console.error("This 404 error means the sw.js file could not be found. Please check the comments in index.html and sw.js for instructions on how to fix your deployment configuration.");
           });
         });
       }
