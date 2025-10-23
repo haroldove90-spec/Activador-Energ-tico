@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import RoleSelector from './components/RoleSelector';
 import CodeSelector from './components/CodeSelector';
@@ -25,16 +26,23 @@ const App: React.FC = () => {
   const [view, setView] = useState<View>('roles');
   const [selectedRole, setSelectedRole] = useState<CodeType>(null);
   const [selectedItem, setSelectedItem] = useState<CodeOrRune | null>(null);
+  const [isApiKeyReady, setIsApiKeyReady] = useState(false);
 
   useEffect(() => {
     applySystemTheme();
 
-    // Listen for changes in system theme
+    const checkApiKey = async () => {
+        // @ts-ignore
+        if (window.aistudio && await window.aistudio.hasSelectedApiKey()) {
+            setIsApiKeyReady(true);
+        }
+    };
+    checkApiKey();
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => applySystemTheme();
     mediaQuery.addEventListener('change', handleChange);
 
-    // Cleanup listener on component unmount
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
   
@@ -58,13 +66,23 @@ const App: React.FC = () => {
     setView('roles');
   }
 
+  const handleSelectKey = async () => {
+    // @ts-ignore
+    await window.aistudio.openSelectKey();
+    setIsApiKeyReady(true);
+  };
+
+  const handleApiKeyError = () => {
+      setIsApiKeyReady(false);
+  }
+
   const renderContent = () => {
     if (view === 'roles') {
       return <RoleSelector onSelectRole={handleSelectRole} />;
     }
     
     if (view === 'faq') {
-        return <FaqPanel onBack={() => setView('main')} />;
+        return <FaqPanel onBack={() => setView('main')} handleApiKeyError={handleApiKeyError} />;
     }
 
     if (view === 'journal') {
@@ -74,26 +92,47 @@ const App: React.FC = () => {
     if (view === 'main' && selectedRole) {
       if (selectedItem) {
         if (selectedRole === 'runes') {
-          return <RunePanel rune={selectedItem as Rune} onBack={handleBackFromItem} />;
+          return <RunePanel rune={selectedItem as Rune} onBack={handleBackFromItem} handleApiKeyError={handleApiKeyError} />;
         }
         return <ActivationPanel code={selectedItem as SacredCode} onBack={handleBackFromItem} />;
       }
 
       switch (selectedRole) {
         case 'sacred':
-          return <CodeSelector codes={SACRED_CODES} categories={SACRED_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos Sagrados" themeColor="purple" />;
+          return <CodeSelector codes={SACRED_CODES} categories={SACRED_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos Sagrados" themeColor="purple" handleApiKeyError={handleApiKeyError} />;
         case 'agesta':
-          return <CodeSelector codes={AGESTA_CODES} categories={AGESTA_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos de Agesta" themeColor="pink" />;
+          return <CodeSelector codes={AGESTA_CODES} categories={AGESTA_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="code" title="Códigos de Agesta" themeColor="pink" handleApiKeyError={handleApiKeyError} />;
         case 'runes':
-          return <CodeSelector codes={RUNES} categories={RUNE_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="rune" title="Oráculo de Runas" themeColor="amber" />;
+          return <CodeSelector codes={RUNES} categories={RUNE_CATEGORIES} onCodeSelect={handleSelectItem} onBack={handleBackToRoles} setView={setView} searchType="rune" title="Oráculo de Runas" themeColor="amber" handleApiKeyError={handleApiKeyError} />;
         default:
-          // This case should ideally not be reached if view logic is correct
           return <RoleSelector onSelectRole={handleSelectRole} />;
       }
     }
     
     return <RoleSelector onSelectRole={handleSelectRole} />;
   };
+
+  if (!isApiKeyReady) {
+    return (
+      <div className="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center animate-fade-in">
+        <div className="w-full max-w-md text-center bg-white/60 dark:bg-slate-800/40 p-8 rounded-2xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4">Se requiere una API Key</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Para usar las funciones de IA de esta aplicación, por favor selecciona una API Key de Google AI Studio. Tu clave se almacena de forma segura y no se comparte.
+          </p>
+          <button
+            onClick={handleSelectKey}
+            className="w-full px-6 py-3 bg-purple-600 text-white font-bold rounded-full shadow-md hover:bg-purple-700 transition-all transform hover:scale-105"
+          >
+            Seleccionar API Key
+          </button>
+          <p className="text-xs text-gray-500 dark:text-gray-500 mt-4">
+            Puede que se apliquen cargos. Revisa la <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-500">documentación de facturación</a> para más detalles.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-4 sm:p-8 flex flex-col items-center">

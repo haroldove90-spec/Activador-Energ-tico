@@ -1,3 +1,4 @@
+
 import React, { useState, FormEvent } from 'react';
 import { GoogleGenAI } from '@google/genai';
 import { BackArrowIcon, SearchIcon } from './icons';
@@ -7,7 +8,12 @@ interface Message {
   text: string;
 }
 
-const FaqPanel: React.FC<{onBack: () => void}> = ({onBack}) => {
+interface FaqPanelProps {
+    onBack: () => void;
+    handleApiKeyError: () => void;
+}
+
+const FaqPanel: React.FC<FaqPanelProps> = ({onBack, handleApiKeyError}) => {
   const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +45,13 @@ const FaqPanel: React.FC<{onBack: () => void}> = ({onBack}) => {
           setChatHistory(prev => [...prev, modelMessage]);
 
       } catch (err) {
-          const errorMessage: Message = { role: 'model', text: 'Lo siento, ha ocurrido un error al consultar al sabio. Por favor, intenta de nuevo.' };
+          const error = err as Error;
+          let messageText = 'Lo siento, ha ocurrido un error al consultar al sabio. Por favor, intenta de nuevo.';
+          if (error.message.includes('API key not valid')) { // Adjusted error message check
+              handleApiKeyError();
+              messageText = "La API Key no es válida. Por favor, vuelve a la pantalla principal y selecciona una clave válida para continuar.";
+          }
+          const errorMessage: Message = { role: 'model', text: messageText };
           setChatHistory(prev => [...prev, errorMessage]);
       } finally {
           setIsLoading(false);

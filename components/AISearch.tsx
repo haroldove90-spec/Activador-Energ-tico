@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, FormEvent } from 'react';
 import { GoogleGenAI } from '@google/genai';
 import type { CodeOrRune } from '../types';
@@ -8,9 +9,10 @@ interface AISearchProps {
   onCodeFound: (code: CodeOrRune) => void;
   onClear: () => void;
   searchType: 'code' | 'rune';
+  handleApiKeyError: () => void;
 }
 
-const AISearch: React.FC<AISearchProps> = ({ codes, onCodeFound, onClear, searchType }) => {
+const AISearch: React.FC<AISearchProps> = ({ codes, onCodeFound, onClear, searchType, handleApiKeyError }) => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +40,6 @@ const AISearch: React.FC<AISearchProps> = ({ codes, onCodeFound, onClear, search
         contents: prompt,
       });
 
-      // FIX: Use response.text directly as per the guidelines.
       const resultText = response.text.trim();
       let foundItem: CodeOrRune | undefined;
 
@@ -63,8 +64,14 @@ const AISearch: React.FC<AISearchProps> = ({ codes, onCodeFound, onClear, search
       }
 
     } catch (err) {
-      console.error(err);
-      setError((err as Error).message || "Ocurrió un error al buscar.");
+      const error = err as Error;
+      if (error.message.includes('API key not valid')) { // Adjusted error message check
+          handleApiKeyError();
+          setError("La API Key seleccionada no es válida. Por favor, selecciona otra.");
+      } else {
+          console.error(err);
+          setError(error.message || "Ocurrió un error al buscar.");
+      }
     } finally {
       setIsLoading(false);
     }

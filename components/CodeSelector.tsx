@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import type { CodeOrRune, SacredCode } from '../types';
 import AISearch from './AISearch';
@@ -14,9 +15,10 @@ interface CodeSelectorProps {
   searchType: 'code' | 'rune';
   title: string;
   themeColor: 'purple' | 'pink' | 'amber';
+  handleApiKeyError: () => void;
 }
 
-const CodeSelector: React.FC<CodeSelectorProps> = ({ codes, categories, onCodeSelect, onBack, setView, searchType, title, themeColor }) => {
+const CodeSelector: React.FC<CodeSelectorProps> = ({ codes, categories, onCodeSelect, onBack, setView, searchType, title, themeColor, handleApiKeyError }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categories[0]);
   const [searchTerm, setSearchTerm] = useState('');
   const [aiFoundCode, setAiFoundCode] = useState<CodeOrRune | null>(null);
@@ -104,7 +106,7 @@ const CodeSelector: React.FC<CodeSelectorProps> = ({ codes, categories, onCodeSe
 
       <h1 className={`text-4xl font-bold text-center mb-4 ${themeClasses.title}`}>{title}</h1>
 
-      <AISearch codes={codes} onCodeFound={handleAiFound} onClear={clearAiSearch} searchType={searchType} />
+      <AISearch codes={codes} onCodeFound={handleAiFound} onClear={clearAiSearch} searchType={searchType} handleApiKeyError={handleApiKeyError} />
 
       <div className="flex flex-wrap justify-center gap-2 mb-6">
         {categories.map(category => (

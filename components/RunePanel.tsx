@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { GoogleGenAI, Modality } from '@google/genai';
 import type { Rune } from '../types';
@@ -6,6 +7,7 @@ import { BackArrowIcon } from './icons';
 interface RunePanelProps {
   rune: Rune;
   onBack: () => void;
+  handleApiKeyError: () => void;
 }
 
 // Helper para convertir un Markdown simple a HTML, manejando listas correctamente.
@@ -47,7 +49,7 @@ const markdownToHtml = (markdown: string): string => {
 };
 
 
-const RunePanel: React.FC<RunePanelProps> = ({ rune, onBack }) => {
+const RunePanel: React.FC<RunePanelProps> = ({ rune, onBack, handleApiKeyError }) => {
   const [generatedData, setGeneratedData] = useState<{ instruction: string; imageUrl: string | null } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -89,8 +91,14 @@ const RunePanel: React.FC<RunePanelProps> = ({ rune, onBack }) => {
         setGeneratedData({ instruction, imageUrl });
 
       } catch (err) {
+        const error = err as Error;
         console.error("Error generating rune data:", err);
-        setError("No se pudo canalizar la energía de la runa. Por favor, intenta con otra o vuelve más tarde.");
+        if (error.message.includes('API key not valid')) { // Adjusted error message check
+            handleApiKeyError();
+            setError("La API Key seleccionada no es válida. Por favor, selecciona otra e intenta de nuevo.");
+        } else {
+            setError("No se pudo canalizar la energía de la runa. Por favor, intenta con otra o vuelve más tarde.");
+        }
       } finally {
         setIsLoading(false);
       }
@@ -99,7 +107,7 @@ const RunePanel: React.FC<RunePanelProps> = ({ rune, onBack }) => {
     if (rune) {
       generateRuneData();
     }
-  }, [rune]);
+  }, [rune, handleApiKeyError]);
 
   return (
     <div className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-xl border border-amber-300 dark:border-amber-700 animate-fade-in-scale">
