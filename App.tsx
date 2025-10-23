@@ -17,6 +17,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<View>('roles');
   const [selectedRole, setSelectedRole] = useState<CodeType>(null);
   const [selectedItem, setSelectedItem] = useState<CodeOrRune | null>(null);
+  const [isAistudioAvailable, setIsAistudioAvailable] = useState(false);
   const [isApiKeyReady, setIsApiKeyReady] = useState(false);
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === 'undefined') return 'light';
@@ -36,13 +37,27 @@ const App: React.FC = () => {
   }, [theme]);
 
   useEffect(() => {
-    const checkApiKey = async () => {
-        // @ts-ignore
-        if (window.aistudio && await window.aistudio.hasSelectedApiKey()) {
-            setIsApiKeyReady(true);
+    const checkAistudio = async () => {
+        try {
+            // @ts-ignore
+            if (window.aistudio && typeof window.aistudio.hasSelectedApiKey === 'function') {
+                setIsAistudioAvailable(true);
+                // @ts-ignore
+                if (await window.aistudio.hasSelectedApiKey()) {
+                    setIsApiKeyReady(true);
+                }
+            } else {
+                console.error("`window.aistudio` is not available. AI features will be disabled.");
+                setIsAistudioAvailable(false);
+            }
+        } catch (e) {
+            console.error("Error checking for AI Studio environment:", e);
+            setIsAistudioAvailable(false);
         }
     };
-    checkApiKey();
+    // Use a small delay to ensure the aistudio object has time to be injected.
+    const timer = setTimeout(checkAistudio, 100); 
+    return () => clearTimeout(timer);
   }, []);
   
   const handleSelectRole = (role: CodeType) => {
@@ -67,8 +82,15 @@ const App: React.FC = () => {
 
   const handleSelectKey = async () => {
     // @ts-ignore
-    await window.aistudio.openSelectKey();
-    setIsApiKeyReady(true);
+    if (window.aistudio) {
+        try {
+            // @ts-ignore
+            await window.aistudio.openSelectKey();
+            setIsApiKeyReady(true);
+        } catch (e) {
+            console.error("Error opening API key selection:", e);
+        }
+    }
   };
 
   const handleApiKeyError = () => {
@@ -110,6 +132,20 @@ const App: React.FC = () => {
     
     return <RoleSelector onSelectRole={handleSelectRole} />;
   };
+
+  if (!isAistudioAvailable) {
+    return (
+        <div className="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center animate-fade-in">
+          <div className="w-full max-w-md text-center bg-white/60 dark:bg-slate-800/40 p-8 rounded-2xl shadow-lg border border-red-200 dark:border-red-900/50">
+            <h1 className="text-3xl font-bold text-red-800 dark:text-red-200 mb-4">Error de Entorno</h1>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              La funcionalidad de Inteligencia Artificial no se pudo cargar. Por favor, asegúrate de estar ejecutando esta aplicación en un entorno compatible para poder utilizarla.
+            </p>
+          </div>
+        </div>
+    );
+  }
+
 
   if (!isApiKeyReady) {
     return (
